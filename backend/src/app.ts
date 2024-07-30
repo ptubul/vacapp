@@ -4,10 +4,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config()
 const app = express();
-//import tripsRoute from "./routes/trips_route";
+import tripsRoute from "./routes/trips_route";
 import authRoute from "./routes/auth_route";
-//import fileRoute from "./routes/file_route";
+import fileRoute from "./routes/file_route";
 import userRoute from "./routes/user_route";
+import CommentsRoute from "./routes/comments_route";
 import connectDB from "./data-source";
 const InitApp = () => {
 
@@ -23,10 +24,12 @@ const InitApp = () => {
         });
         app.use(cors());
         app.use("/public", express.static("public"));        
-        //app.use("/trips", tripsRoute);
+        app.use("/trips", tripsRoute);
         app.use("/auth", authRoute);
-        //app.use("/file", fileRoute);
+        app.use("/file", fileRoute);
         app.use("/users", userRoute);
+        app.use("/comments", CommentsRoute);
+
 
         reslove(app);
     })

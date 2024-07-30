@@ -1,202 +1,139 @@
-// import Trips, { ITrips } from "../entity/trips_model";
-// import mongoose, { Model } from "mongoose";
-// import { Request, Response } from "express";
+import { Request, Response } from "express";
+import { EntityTarget} from "typeorm";
+import { BaseController } from "./base_controller";
+import { AuthRequest } from "../common/auth_middleware";
+import { ITrips, Trip } from "../entity/trips_model";
+import { Comment } from "../entity/comment_model";
+class TripController extends BaseController<ITrips> {
+  constructor(entity: EntityTarget<ITrips>) {
+    super(entity);
+  }
 
-// export interface AuthRequest extends Request {
-//   user: {
-//     _id?: string;
-//     userName?: string;
-//     imgUrl?: string;
-//   };
-// }
-
-// const getAllTrips = async (req: Request, res: Response) => {
-//   console.log("get all trips");
-//   try {
-//     const objects = await Trips.find();
-//     res.status(200).send(objects);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// const getByOwnerId = async (req: Request, res: Response) => {
-//   console.log(`get by id: ${req.params.id}`);
-//   try {
-//     const trips = await Trips.find({ owner: req.params.id });
-//     if (trips.length > 0) return res.status(200).send(trips);
-//     res.status(201).send(trips);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// const getByTripId = async (req: Request, res: Response) => {
-//   try {
-//     const trips = await Trips.findOne({ _id: req.params.id });
-//     res.status(200).send(trips);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// const post = async (req: AuthRequest, res: Response) => {
-//   console.log(`post trip ${req.body}`);
-//   const userId = req.user._id;
+  async post(req: AuthRequest, res: Response): Promise<void> {
+    req.body.owner = req.user._id;
+    try {
+      await super.post(req, res); // Call the correct method from the base class
+    } catch (err) {
+      res.status(500).send("Error occurred while processing the request");
+    }
+  }
   
+
+
+  async getByOwnerId(req: Request, res: Response) {
+    console.log(`get by id: ${req.params.id}`);
+    try {
+      const ownerId = req.params.id;
+
+      // Use QueryBuilder for more complex queries
+
+      const trips = await this.entity.createQueryBuilder("trip")
+      .leftJoinAndSelect("trip.owner", "owner")
+      .leftJoinAndSelect("trip.likes", "likes")   // Join likes
+      .leftJoinAndSelect("trip.comments", "comments") // Join comments
+      .where("owner._id = :ownerId", { ownerId })
+      .getMany();
+      if (trips.length > 0) return res.status(200).send(trips);
+      res.status(201).send(trips);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  }
+  
+  async getWithComments(req: Request, res: Response) {
+    console.log(`get by id: ${req.params.id}`);
+    try {
+      const tripId = req.params.id;
+      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['comments','likes'] });
+      if (trip)return res.status(200).send(trip);
+      res.status(201).send(trip);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  async addComment(req: AuthRequest, res: Response) {
+    console.log("addComment");
+    try {
+      const tripId = req.params.tripId;
+      const owner_id = req.user._id;
+
+      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['comments','likes'] });
+      if (!trip) {
+        return res.status(404).send("Trip not found");
+      } 
+
+      trip.comments.push({
+              ownerId: owner_id,
+              owner: trip.userName,
+              comment: req.body.comment,
+              date: req.body.date,
+            });
+
+    trip.numOfComments = trip.comments.length; // Update the comment count
+    await this.entity.save(trip);
+
+      res.status(200).send(trip.comments);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+
  
-//   req.body.owner = userId;
 
-//   console.log(`Saving trip with userName: ${req.body.userName}`);
+  async deleteComment(req: AuthRequest, res: Response) {
+      
 
-//   try {
-//     const obj = await Trips.create(req.body);
+    console.log("DeleteComment");
+    try {
 
-//     res.status(200).send("OK");
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
+      const tripId = req.params.tripId;
+      const commentId = req.params.commentId;
+      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['comments'] });
+      if (!trip) {
+        return res.status(404).send("Trip not found");
+      }
+      console.log(`before delete: ${trip}`);
+      trip.comments = trip.comments.filter(
+        (comment) => comment._id.toString() !== commentId
+      );
+      trip.numOfComments = trip.comments.length;
+      console.log(`after delete: ${trip}`);
+      await this.entity.save(trip);
 
-// const putById = async (req: AuthRequest, res: Response) => {
-//   console.log("putById method called");
-//   const userId = req.user._id;
-//   const objId = req.params.id;
+      res.status(200).send(trip.comments);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
 
-//   try {
-//     const obj = await Trips.findOne({ _id: objId, owner: userId });
-//     if (!obj) {
-//       return res.status(404).json({
-//         message: "Object not found or you do not have permission to update it.",
-//       });
-//     }
+  async addLike(req: AuthRequest, res: Response) {
+    try {
+      const tripId = req.params.tripId;
+      const userId = req.user._id;
+      req.body.owner = userId;
 
-//     const updateObj = await Trips.findByIdAndUpdate(objId, req.body, {
-//       new: true,
-//     });
+      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['likes'] });
+      if (!trip) {
+        return res.status(404).send("Trip not found");
+      }
 
-//     res.send(updateObj);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// const deleteById = async (req: AuthRequest, res: Response) => {
-//   try {
-//     const userId = req.user._id;
-//     const objId = req.params.id;
-
-//     const obj = await Trips.findOne({ _id: objId, owner: userId });
-
-//     if (!obj) {
-//       return res.status(404).json({
-//         message: "Object not found or you do not have permission to delete it.",
-//       });
-//     }
-
-//     await Trips.deleteOne({ _id: objId });
-//     res.send(`Object ${objId} is deleted`);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// const addComment = async (req: AuthRequest, res: Response) => {
-//   console.log("addComment");
-//   try {
-//     const tripId = req.params.tripId;
-//     if (!req.user) {
-//       return res.status(401).send("User not authenticated");
-//     }
-
-//     const owner_id = req.user._id;
-//     const { comment } = req.body;
-
-//     const trip = await Trips.findById(tripId);
-//     if (!trip) {
-//       return res.status(404).send("Trip not found");
-//     }
-
-//     trip.comments.push({
-//       ownerId: owner_id,
-//       owner: comment.owner,
-//       comment: comment.comment,
-//       date: comment.date,
-//     });
-//     trip.numOfComments++;
-
-//     await trip.save();
-
-//     res.status(200).send(trip.comments);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// };
-
-// const deleteComment = async (req: AuthRequest, res: Response) => {
-//   console.log("DeleteComment");
-//   try {
-//     const tripId = req.params.tripId;
-//     const commentId = req.params.commentId;
-
-//     const trip = await Trips.findById(tripId);
-//     if (!trip) {
-//       return res.status(404).send("Trip not found");
-//     }
-//     console.log(`befor delete: ${trip}`);
-//     trip.comments = trip.comments.filter(
-//       (comment) => comment._id.toString() !== commentId
-//     );
-//     trip.numOfComments = trip.comments.length;
-//     console.log(`after delete: ${trip}`);
-//     await trip.save();
-
-//     res.status(200).send(trip.comments);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// };
-
-// const addLike = async (req: AuthRequest, res: Response) => {
-//   try {
-//     const tripId = req.params.tripId;
-//     const userId = req.user._id;
-//     req.body.owner = userId;
-
-//     const trip = await Trips.findById(tripId);
-//     if (!trip) {
-//       return res.status(404).send("Trip not found");
-//     }
-
-//     if (!trip.likes.some((like) => like.owner === userId)) {
-//       trip.likes.push({ owner: userId });
-//       trip.numOfLikes++;
-//       await trip.save();
-//       return res.status(200).send(trip);
-//     }
-//     trip.likes = trip.likes.filter((user) => user.owner !== userId);
-//     trip.numOfLikes--;
-//     await trip.save();
-//     return res.status(200).send(trip);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// };
-
-// export default {
-//   getAllTrips,
-//   getByOwnerId,
-//   getByTripId,
-//   post,
-//   putById,
-//   deleteById,
-//   addComment,
-//   deleteComment,
-//   addLike,
-// };
-
+      if (!trip.likes.some((like) => like.owner === userId)) {
+        trip.likes.push({ owner: userId });
+        trip.numOfLikes++;
+        await this.entity.save(trip);
+        return res.status(200).send(trip);
+      }
+      trip.likes = trip.likes.filter((user) => user.owner !== userId);
+      trip.numOfLikes--;
+      await this.entity.save(trip);
+      return res.status(200).send(trip);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+}
+export default new TripController(Trip);
 

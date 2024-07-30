@@ -6,7 +6,8 @@ export interface IUser {
   imgUrl?: string;
   refreshTokens?: string[];
 }
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity,OneToMany } from "typeorm";
+import { Trip } from "./trips_model";
 
 @Entity()
 export  class User extends BaseEntity  {
@@ -27,5 +28,8 @@ export  class User extends BaseEntity  {
 
     @Column("simple-array", { nullable: true })
     refreshTokens: string[];
+
+    @OneToMany(() => Trip, trip => trip.owner,{ cascade: true })
+    trips: Trip[];
 
 }

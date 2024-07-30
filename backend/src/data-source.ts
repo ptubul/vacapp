@@ -1,7 +1,11 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/users_model";
-//import Trip from "./entity/trips_model";
+import { readFileSync } from "fs";
+import { Trip } from "./entity/trips_model";
+import { Like } from "./entity/like_model";
+import { Comment } from "./entity/comment_model";
+
 
 const connectDB =  new DataSource({
     type: "postgres",
@@ -12,11 +16,15 @@ const connectDB =  new DataSource({
     database: process.env.DB_DATABASE,
     logging: false,
     synchronize: true,
-    entities: [User],
+    entities: [User,Trip,Like,Comment],
     extra: {
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false
-
+      ssl: 
+      //not needed if not for "real production"
+      // process.env.NODE_ENV === 'production' 
+      //   ? { rejectUnauthorized: true, ca: readFileSync(process.env.SSL_CERT_PATH_POSTGRES).toString() } 
+      //   : false
+      { rejectUnauthorized: false}
     }
-})
+  });
 
 export default connectDB;

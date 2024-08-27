@@ -3,7 +3,7 @@ import { EntityTarget } from "typeorm";
 import { BaseController } from "./base_controller";
 import { AuthRequest } from "../common/auth_middleware";
 import { ITrips, Trip } from "../entity/trips_model";
-import { Comment } from "../entity/comment_model";
+//import { Comment } from "../entity/comment_model";
 class TripController extends BaseController<ITrips> {
   constructor(entity: EntityTarget<ITrips>) {
     super(entity);
@@ -78,9 +78,9 @@ class TripController extends BaseController<ITrips> {
 
       trip.comments.push({
         ownerId: owner_id,
-        owner: req.body.comment.owner,
-        comment: req.body.comment.comment,
-        date: req.body.comment.date,
+        owner: req.body.owner,
+        comment: req.body.comment,
+        date: req.body.date,
       });
 
       console.log("Comments after push:", trip.comments);

@@ -27,7 +27,7 @@ beforeAll(async () => {
   userId = response1.body._id;
   userName = response1.body.userName; // שמירת ה-_id של המשתמש לשימוש בבדיקות
   const response2 = await request(app).post("/auth/login").send(user);
-  accessToken = response2.body.tokens.accessToken;
+  accessToken = response2.body.accessToken;
 });
 afterAll(async () => {
   await connectDB.destroy();
@@ -46,7 +46,7 @@ describe("--Trips Tests--", () => {
   };
 
   const trip2: ITrips = {
-    // owner: "moshe",
+     owner: "moshe",
     userName: "aa",
     typeTraveler: "type Traveler 2",
     country: "Country 2",
@@ -270,7 +270,7 @@ describe("--Trips Tests--", () => {
       .post(`/trips/${trip._id}/comments`)
       .set("Authorization", "JWT " + accessToken)
       .send({
-        owner: "David",
+        owner:user.userName,
         comment: "This is a test comment",
         date: new Date(),
       });
@@ -287,7 +287,6 @@ describe("--Trips Tests--", () => {
       .send({
         owner: "David",
         comment: "This is a test comment",
-        date: new Date(),
       });
 
     expect(res.statusCode).toBe(404);

@@ -8,7 +8,7 @@ import tripsRoute from "./routes/trips_route";
 import authRoute from "./routes/auth_route";
 import fileRoute from "./routes/file_route";
 import userRoute from "./routes/user_route";
-import CommentsRoute from "./routes/comments_route";
+//import CommentsRoute from "./routes/comments_route";
 import connectDB from "./data-source";
 const InitApp = () => {
 
@@ -28,7 +28,7 @@ const InitApp = () => {
         app.use("/auth", authRoute);
         app.use("/file", fileRoute);
         app.use("/users", userRoute);
-        app.use("/comments", CommentsRoute);
+//        app.use("/comments", CommentsRoute);
 
 
         reslove(app);

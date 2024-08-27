@@ -52,10 +52,11 @@ export class Trip {
   @Column({ type: "int" })
   numOfDays: number;
 
-  @Column("simple-array", { nullable: true })
+  @Column("json", { nullable: true })
   tripPhotos: string[];
 
   @Column("simple-json")
+  @Column("json")
   tripDescription: string[];
 
   @OneToMany(() => Comment, (comment) => comment.trip, { cascade: true })

@@ -27,7 +27,7 @@ beforeAll(async () => {
   const response1 = await request(app).post("/auth/register").send(user);
   user._id = response1.body._id;
   const response2 = await request(app).post("/auth/login").send(user);
-  accessToken = response2.body.tokens.accessToken;
+  accessToken = response2.body.accessToken;
 });
 
 afterAll((done) => {

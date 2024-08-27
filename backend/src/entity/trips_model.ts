@@ -55,7 +55,7 @@ export class Trip {
   @Column("simple-array", { nullable: true })
   tripPhotos: string[];
 
-  @Column("simple-array")
+  @Column("simple-json")
   tripDescription: string[];
 
   @OneToMany(() => Comment, (comment) => comment.trip, { cascade: true })

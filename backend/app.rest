@@ -44,16 +44,16 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:90/trips
 Content-Type: application/json
-Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIzMzNiNjExNy05OThmLTQ1OTUtYmI4MS01NjY2NmQ2NzFkY2QiLCJpYXQiOjE3MjM1MTczMjksImV4cCI6MTcyMzUxNzM1OX0._Y7XyaHS4iXfIMoJTTwvitz6MzE12O9u0N4CLmejQno
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJkNDQ2ZmQ0Ny0xMGE3LTQ4YjgtYmE0YS1mODRmMjgxMDU2YjkiLCJpYXQiOjE3MjQ3NjM4MTAsImV4cCI6MTcyNDc2NTYxMH0.FtqdyzTUFdhj5EAYo5ZpSRKqFi0JwrMI528GNh3IojM
 
 {
  "userName": "David",
   "typeTraveler": "friends",
   "country": "Netherlands",
   "typeTrip": "integrated",
-  "numOfDays": 3,
+  "numOfDays": 4,
   "tripDescription": [
-   "We took a day trip to the Zaanse Schans a picturesque village just outside Amsterdam known for its historic windmills and traditional Dutch houses We spent the morning exploring the village, visiting the windmills, and learning about Dutch crafts like cheese-making and wooden clog carving. We had lunch at a quaint little café in the village enjoying some fresh cheese and bread. In the afternoon, we headed to the town of Volendam, where we walked along the charming harbor and visited the Volendam Museum we enjoyed some fresh seafood at a waterfront restaurant Returning to Amsterdam in the evening, we took a stroll through the lively Red Light District experiencing its unique atmosphere We took a day trip to the Zaanse Schans a picturesque village just  We took a day trip to the Zaanse Schans a picturesque village just "
+   "took a day trip to, the Zaanse took a day trip to, the Zaanse took a day trip to, the Zaanse took a day trip to, the Zaanse took a day trip to, the Zaanse took a day trip to, the Zaanse","We took a day trip to, the Zaanse ","Schans a picturesque, village just outside Amsterdam known for its historic ,windmills", "and traditional Dutch houses We spent the morning exploring the village, visiting the windmills, and learning about Dutch crafts like cheese-making and wooden clog carving. We had lunch at a quaint little café in the village enjoying some fresh cheese and bread. In the afternoon, we headed to the town of Volendam, where we walked along the charming harbor and visited the Volendam Museum we enjoyed some fresh seafood at a waterfront restaurant Returning to Amsterdam in the evening, we took a stroll through the lively Red Light District experiencing its unique atmosphere We took a day trip to the Zaanse Schans a picturesque village just  We took a day trip to the Zaanse Schans a picturesque village just "
   ]
 }
 

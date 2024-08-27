@@ -20,4 +20,3 @@ class UserController extends BaseController<IUser> {
 }
 
 export default new UserController(User);
-

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { EntityTarget} from "typeorm";
+import { EntityTarget } from "typeorm";
 import { BaseController } from "./base_controller";
 import { AuthRequest } from "../common/auth_middleware";
 import { ITrips, Trip } from "../entity/trips_model";
@@ -17,8 +17,6 @@ class TripController extends BaseController<ITrips> {
       res.status(500).send("Error occurred while processing the request");
     }
   }
-  
-
 
   async getByOwnerId(req: Request, res: Response) {
     console.log(`get by id: ${req.params.id}`);
@@ -27,12 +25,13 @@ class TripController extends BaseController<ITrips> {
 
       // Use QueryBuilder for more complex queries
 
-      const trips = await this.entity.createQueryBuilder("trip")
-      .leftJoinAndSelect("trip.owner", "owner")
-      .leftJoinAndSelect("trip.likes", "likes")   // Join likes
-      .leftJoinAndSelect("trip.comments", "comments") // Join comments
-      .where("owner._id = :ownerId", { ownerId })
-      .getMany();
+      const trips = await this.entity
+        .createQueryBuilder("trip")
+        .leftJoinAndSelect("trip.owner", "owner")
+        .leftJoinAndSelect("trip.likes", "likes") // Join likes
+        .leftJoinAndSelect("trip.comments", "comments") // Join comments
+        .where("owner._id = :ownerId", { ownerId })
+        .getMany();
       if (trips.length > 0) return res.status(200).send(trips);
       res.status(201).send(trips);
     } catch (err) {
@@ -40,13 +39,16 @@ class TripController extends BaseController<ITrips> {
       res.status(500).json({ message: err.message });
     }
   }
-  
+
   async getWithComments(req: Request, res: Response) {
     console.log(`get by id: ${req.params.id}`);
     try {
       const tripId = req.params.id;
-      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['comments','likes'] });
-      if (trip)return res.status(200).send(trip);
+      const trip = await this.entity.findOne({
+        where: { _id: tripId },
+        relations: ["comments", "likes", "owner"],
+      });
+      if (trip) return res.status(200).send(trip);
       res.status(201).send(trip);
     } catch (err) {
       console.error(err);
@@ -60,38 +62,48 @@ class TripController extends BaseController<ITrips> {
       const tripId = req.params.tripId;
       const owner_id = req.user._id;
 
-      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['comments','likes'] });
+      const trip = await this.entity.findOne({
+        where: { _id: tripId },
+        relations: ["comments", "likes"],
+      });
       if (!trip) {
         return res.status(404).send("Trip not found");
-      } 
+      }
+
+      console.log("Trip found:", trip);
+      console.log("Comment to add:", req.body);
+
+      // Try logging the structure of the comments array before pushing
+      console.log("Comments before push:", trip.comments);
 
       trip.comments.push({
-              ownerId: owner_id,
-              owner: trip.userName,
-              comment: req.body.comment,
-              date: req.body.date,
-            });
+        ownerId: owner_id,
+        owner: req.body.comment.owner,
+        comment: req.body.comment.comment,
+        date: req.body.comment.date,
+      });
 
-    trip.numOfComments = trip.comments.length; // Update the comment count
-    await this.entity.save(trip);
+      console.log("Comments after push:", trip.comments);
+
+      trip.numOfComments = trip.comments.length; // Update the comment count
+      await this.entity.save(trip);
 
       res.status(200).send(trip.comments);
     } catch (error) {
+      console.error("Error in addComment:", error.message);
       res.status(500).send(error.message);
     }
   }
 
- 
-
   async deleteComment(req: AuthRequest, res: Response) {
-      
-
     console.log("DeleteComment");
     try {
-
       const tripId = req.params.tripId;
       const commentId = req.params.commentId;
-      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['comments'] });
+      const trip = await this.entity.findOne({
+        where: { _id: tripId },
+        relations: ["comments"],
+      });
       if (!trip) {
         return res.status(404).send("Trip not found");
       }
@@ -115,7 +127,10 @@ class TripController extends BaseController<ITrips> {
       const userId = req.user._id;
       req.body.owner = userId;
 
-      const trip = await this.entity.findOne({ where: { _id: tripId }, relations: ['likes'] });
+      const trip = await this.entity.findOne({
+        where: { _id: tripId },
+        relations: ["likes"],
+      });
       if (!trip) {
         return res.status(404).send("Trip not found");
       }
@@ -136,4 +151,3 @@ class TripController extends BaseController<ITrips> {
   }
 }
 export default new TripController(Trip);
-

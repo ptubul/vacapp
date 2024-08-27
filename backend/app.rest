@@ -14,22 +14,54 @@ Content-Type: application/json
 }
 
 ###
-POST http://127.0.0.1:3000/trips
+POST http://127.0.0.1:90/auth/register
 Content-Type: application/json
-Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWI2ZDVmZTUzODUyMTdhNTBmZTVmNzciLCJpYXQiOjE3MDcwMDY4NzgsImV4cCI6MTcwNzAxMDQ3OH0.l18yaqfy1XiwJ-OYzyveuCEtpbGVjj60aS2ACA5rux0
 
 {
- "userName": "Moshe Levin",
-  "owner": "Moshe",
-  "typeTraveler": "romantic couple",
-  "country": "Bulgaria",
-  "typeTrip": "romantic",
-  "numOfDays": 3,
-  "tripDescription": ["Morning: We arrived in Sofia, the capital of Bulgaria, early in the morning. The city greeted us with a refreshing breeze and charming streets. My partner surprised me with a lovely bouquet of local flowers - such a sweet start to our trip. Afternoon: We explored the heart of Sofia, visiting landmarks like Alexander Nevsky Cathedral and the bustling Vitosha Boulevard. Walking hand in hand, we admired the city's blend of history and modernity. Evening: Dinner was at a quaint restaurant in the city center. We had a table outside, under the stars, and indulged in delicious Bulgarian cuisine. The night ended with a romantic stroll through the city's beautifully lit parks.",
-   "Morning: We took a train to Plovdiv, known for its romantic Old Town. The cobbled streets and colorful houses made me feel like I was walking through a fairy tale. Afternoon: We visited the ancient Roman theater of Plovdiv, a testament to the city's rich history. Sitting in the theater, we imagined watching a play from centuries ago. Evening: We had dinner at a local winery on the outskirts of Plovdiv. Tasting Bulgarian wines and enjoying the serene vineyard was absolutely magical.",
-"Morning: Our last day started with a leisurely breakfast at our hotel, where we planned our next adventure together. Afternoon: Before heading back to Sofia for our flight, we relaxed at the Central Mineral Baths in Plovdiv, soaking in the warm, mineral-rich waters. Evening: As we boarded our flight back, we were already reminiscing about the beautiful moments we shared. Bulgaria, with its enchanting towns and warm hospitality, had given us a treasure trove of memories to cherish."]
-
+ "email": "test1@test1@gmil.com",
+  "password": "315711440",
+  "userName": "test1"
 }
+
+
+###
+POST http://127.0.0.1:90/auth/login
+Content-Type: application/json
+
+{
+ "email": "test1@test1@gmil.com",
+  "password": "315711440"
+}
+###
+POST http://127.0.0.1:90/auth/login
+Content-Type: application/json
+
+{
+ "email": "1020dudu@gmail.com",
+  "password": "du10du20"
+}
+
+###
+POST http://127.0.0.1:90/trips
+Content-Type: application/json
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIzMzNiNjExNy05OThmLTQ1OTUtYmI4MS01NjY2NmQ2NzFkY2QiLCJpYXQiOjE3MjM1MTczMjksImV4cCI6MTcyMzUxNzM1OX0._Y7XyaHS4iXfIMoJTTwvitz6MzE12O9u0N4CLmejQno
+
+{
+ "userName": "David",
+  "typeTraveler": "friends",
+  "country": "Netherlands",
+  "typeTrip": "integrated",
+  "numOfDays": 3,
+  "tripDescription": [
+   "We took a day trip to the Zaanse Schans a picturesque village just outside Amsterdam known for its historic windmills and traditional Dutch houses We spent the morning exploring the village, visiting the windmills, and learning about Dutch crafts like cheese-making and wooden clog carving. We had lunch at a quaint little café in the village enjoying some fresh cheese and bread. In the afternoon, we headed to the town of Volendam, where we walked along the charming harbor and visited the Volendam Museum we enjoyed some fresh seafood at a waterfront restaurant Returning to Amsterdam in the evening, we took a stroll through the lively Red Light District experiencing its unique atmosphere We took a day trip to the Zaanse Schans a picturesque village just  We took a day trip to the Zaanse Schans a picturesque village just "
+  ]
+}
+
+###
+GET http://127.0.0.1:90/trips
+
+###
+GET http://127.0.0.1:90/trips/FullTrip/69f15c20-58e8-48e5-94a3-092593a79825
 
 ###
 PUT   http://127.0.0.1:3000/65908f9d1ac13a259b7ad218
@@ -41,14 +73,16 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://127.0.0.1:3000/65909065064f82501110fe06
+DELETE http://127.0.0.1:90/bab1ac06-50e6-48a6-8e48-1de9313838f9
+Content-Type: application/json
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxYzA2MTJiMC1lNTUwLTQ2M2QtOTk1ZC0zMTUyM2EwMjE4NzkiLCJpYXQiOjE3MjI4OTk0MzEsImV4cCI6MTcyMjg5OTQ2MX0.hRmIJgiD9WBr2mWYva6CdwpRyLWO514sUHSuzzykabg
 
 
 
 /////////////////////////////
 
 ###
-POST http://127.0.0.1:3000/auth/login
+POST http://127.0.0.1:90/auth/login
 Content-Type: application/json
 
 {
@@ -58,7 +92,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://127.0.0.1:3000/auth/register
+POST http://127.0.0.1:90/auth/register
 Content-Type: application/json
 
 {
@@ -69,12 +103,12 @@ Content-Type: application/json
 
 
 ###
-POST http://127.0.0.1:3000/auth/logout
+POST http://127.0.0.1:90/auth/login
 Content-Type: application/json
 
 {
- "email": "Dfds",
-  "password": "315711332"
+ "email": "yair323aaaaaaaaaaa@gmail.com",
+  "password": "315711440"
 }
 
 

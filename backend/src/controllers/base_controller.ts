@@ -9,8 +9,7 @@ export class BaseController<Entity extends { _id?: string }> {
     this.entity = connectDB.getRepository(entity);
   }
 
-  
-  async post(req: Request, res: Response){
+  async post(req: Request, res: Response) {
     console.log("save object");
     console.log(req.body);
     try {
@@ -25,8 +24,9 @@ export class BaseController<Entity extends { _id?: string }> {
   async get(req: Request, res: Response) {
     try {
       if (req.params.id) {
-        
-       const object = await this.entity.findOneBy({ _id: req.params.id} as FindOptionsWhere<Entity>)
+        const object = await this.entity.findOneBy({
+          _id: req.params.id,
+        } as FindOptionsWhere<Entity>);
         console.log(object);
         res.send(object);
       } else {
@@ -44,11 +44,12 @@ export class BaseController<Entity extends { _id?: string }> {
     console.log(req.params.id);
 
     try {
-
-      const userToUpdate = await this.entity.findOneBy({ _id: req.params.id} as FindOptionsWhere<Entity>);
+      const userToUpdate = await this.entity.findOneBy({
+        _id: req.params.id,
+      } as FindOptionsWhere<Entity>);
 
       if (!userToUpdate) {
-          return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: "User not found" });
       }
 
       // Replace the entire user object with the new data
@@ -68,8 +69,6 @@ export class BaseController<Entity extends { _id?: string }> {
       res.status(404).send(err);
     }
   }
-  
-  
 
   async delete(req: Request, res: Response) {
     console.log("delete Object");
@@ -78,7 +77,9 @@ export class BaseController<Entity extends { _id?: string }> {
         const object = await this.entity.delete(req.params.id);
         if (object.affected === 0) {
           // No rows affected, respond with 504
-          return res.status(504).send("No rows deleted, request timed out or object not found");
+          return res
+            .status(504)
+            .send("No rows deleted, request timed out or object not found");
         }
         console.log(object);
       } else {

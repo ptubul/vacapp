@@ -78,9 +78,9 @@ class TripController extends BaseController<ITrips> {
 
       trip.comments.push({
         ownerId: owner_id,
-        owner: req.body.owner,
-        comment: req.body.comment,
-        date: req.body.date,
+        owner: req.body.comment.owner,
+        comment: req.body.comment.comment,
+        date: req.body.comment.date,
       });
 
       console.log("Comments after push:", trip.comments);

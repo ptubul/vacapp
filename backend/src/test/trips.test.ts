@@ -46,7 +46,7 @@ describe("--Trips Tests--", () => {
   };
 
   const trip2: ITrips = {
-     owner: "moshe",
+    owner: "moshe",
     userName: "aa",
     typeTraveler: "type Traveler 2",
     country: "Country 2",
@@ -270,7 +270,7 @@ describe("--Trips Tests--", () => {
       .post(`/trips/${trip._id}/comments`)
       .set("Authorization", "JWT " + accessToken)
       .send({
-        owner:user.userName,
+        owner: user.userName,
         comment: "This is a test comment",
         date: new Date(),
       });

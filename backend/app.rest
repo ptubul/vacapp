@@ -18,9 +18,9 @@ POST http://127.0.0.1:90/auth/register
 Content-Type: application/json
 
 {
- "email": "test1@test1@gmil.com",
+ "email": "test1@gmil.com",
   "password": "315711440",
-  "userName": "test1"
+  "userName": "test2"
 }
 
 
@@ -29,7 +29,7 @@ POST http://127.0.0.1:90/auth/login
 Content-Type: application/json
 
 {
- "email": "test1@test1@gmil.com",
+ "email": "test1@gmil.com",
   "password": "315711440"
 }
 ###
@@ -44,16 +44,16 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:90/trips
 Content-Type: application/json
-Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI4NmMxMjk1ZC0zMjdhLTRkN2MtODZkZS05YzhhNDg1NTU5MTMiLCJpYXQiOjE3MjQ3NjM2NjMsImV4cCI6MTcyNDc2Mzk2M30.zvtJDaN2qWgXvlSUMhASkKgVdQv0J10tgTpX58Bsb4s
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJlNjk0NDlmOS05NzAyLTQ1N2MtOTg3YS1kODAxYzE4YTE3N2EiLCJpYXQiOjE3MjU0Njk0OTgsImV4cCI6MTcyNTQ2OTc5OH0.ypJycAVr3QVfRmA6ExOec6nQFcCiVGcIdgbJY8dHUAM
 
 {
- "userName": "test1",
+ "userName": "test4",
   "typeTraveler": "friends",
   "country": "Netherlands",
   "typeTrip": "integrated",
   "numOfDays": 3,
    "tripDescription": 
-    "We took a day trip to the Zaanse Schans, a picturesque village just outside Amsterdam known for its historic windmills and traditional Dutch houses. We spent the morning exploring the village, visiting the windmills, and learning about Dutch crafts like cheese-making and wooden clog carving. We had lunch at a quaint little café in the village enjoying some fresh cheese and bread. In the afternoon, we headed to the town of Volendam, where we walked along the charming harbor and visited the Volendam Museum. We enjoyed some fresh seafood at a waterfront restaurant. Returning to Amsterdam in the evening, we took a stroll through the lively Red Light District, experiencing its unique atmosphere."
+    ["We took a day trip to the", "hdbu s iachaue rw34r w3t 3w4t 34tui 34tui 34t", "Zaanse Schans","a picturesque village just outside Amsterdam known for its historic windmills and traditional Dutch houses. We spent the morning exploring the village, visiting the windmills, and learning about Dutch crafts like cheese-making and wooden clog carving. We had lunch at a quaint little café in the village enjoying some fresh cheese and bread. In the afternoon, we headed to the town of Volendam, where we walked along the charming harbor and visited the Volendam Museum. We enjoyed some fresh seafood at a waterfront restaurant. Returning to Amsterdam in the evening, we took a stroll through the lively Red Light District, experiencing its unique atmosphere."]
   
 }
 

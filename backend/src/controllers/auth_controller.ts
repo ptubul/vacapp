@@ -62,6 +62,7 @@ const register = async (req: Request, res: Response) => {
       userName: userName,
     });
     const tokens = await generateTokens(rs2);
+    console.log(rs2);
     res.status(201).send({
       userName: rs2.userName,
       email: rs2.email,
@@ -140,6 +141,7 @@ const login = async (req: Request, res: Response) => {
     }
 
     const tokens = await generateTokens(user);
+    console.log(user);
     return res.status(200).send({
       userName: user.userName,
       email: user.email,

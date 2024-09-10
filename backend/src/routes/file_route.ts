@@ -63,7 +63,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/", upload.single("file"), function (req, res) {
-  const base = "https://localhost:"+process.env.HTTPS_PORT +"/";
+  const base = "http://localhost:" + process.env.port + "/";
   console.log("router.post(/file: " + base + req.file.path);
   res.status(200).send({ url: base + req.file.path });
 });

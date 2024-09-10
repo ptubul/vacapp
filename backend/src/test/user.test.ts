@@ -1,7 +1,7 @@
 import request from "supertest";
 import { Express } from "express";
 import initApp from "../app";
-import  { IUser, User } from "../entity/users_model";
+import { IUser, User } from "../entity/users_model";
 import connectDB from "../data-source";
 
 const user: IUser = {
@@ -13,17 +13,16 @@ const user: IUser = {
 let accessToken: string;
 let app: Express;
 
-
 beforeAll(async () => {
+  app = await initApp();
+  console.log("beforeAll");
 
-    app = await initApp();
-    console.log("beforeAll");
-  
-  await connectDB.getRepository(User)
-.createQueryBuilder()
-  .delete()
-  .where("email = :email", { email: user.email }) // Replace 123 with the actual user ID
-  .execute();
+  await connectDB
+    .getRepository(User)
+    .createQueryBuilder()
+    .delete()
+    .where("email = :email", { email: user.email }) // Replace 123 with the actual user ID
+    .execute();
   const response1 = await request(app).post("/auth/register").send(user);
   user._id = response1.body._id;
   const response2 = await request(app).post("/auth/login").send(user);
@@ -31,54 +30,48 @@ beforeAll(async () => {
 });
 
 afterAll((done) => {
-  connectDB.destroy(); 
+  connectDB.destroy();
   done();
 });
 
 describe("--User Tests--", () => {
-
   test("Test Get user info", async () => {
     const response = await request(app)
-      .get("/users/"+user._id)
+      .get("/users/" + user._id)
       .set("Authorization", "JWT " + accessToken);
     expect(response.statusCode).toBe(200);
     expect(response.body._id).toBe(user._id);
-
   });
 
   test("Update User Profile", async () => {
     const updatedUserData = {
       userName: "jacob",
       imgUrl: "https://example.com/profile.jpg",
-
     };
 
     const response = await request(app)
-      .put("/users/"+user._id)
+      .put("/users/" + user._id)
       .set("Authorization", "JWT " + accessToken)
       .send(updatedUserData);
-    
+
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty("imgUrl", updatedUserData.imgUrl);
     expect(response.body).toHaveProperty("userName", updatedUserData.userName);
 
-    user.imgUrl =updatedUserData.imgUrl
-    user.userName =updatedUserData.userName
-
+    user.imgUrl = updatedUserData.imgUrl;
+    user.userName = updatedUserData.userName;
   });
 
   test("Update User Profile failed", async () => {
     const updatedUserData = {
       userName: "jacob",
       imgUrl: "https://example.com/profile.jpg",
-
     };
 
     const res = await request(app)
-      .put("/users/"+232323)
+      .put("/users/" + 232323)
       .set("Authorization", "JWT " + accessToken)
       .send(updatedUserData);
-      expect(res.status).toBe(404);
+    expect(res.status).toBe(404);
   });
-})
-
+});

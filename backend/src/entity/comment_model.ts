@@ -5,6 +5,7 @@ export interface IComment {
   _id?: string;
   ownerId: string;
   owner: string;
+  // imgUrl?: string;
   comment: string;
   date: Date;
 }
@@ -23,9 +24,12 @@ export class Comment {
   @Column({ type: "text" })
   comment: string;
 
+  // @Column({ type: "text" })
+  // imgUrl: string;
+
   @Column({ type: "date" })
   date: Date;
 
-  @ManyToOne(() => Trip, (trip) => trip.comments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Trip, (trip) => trip.comments, { onDelete: "CASCADE" })
   trip: Trip;
 }

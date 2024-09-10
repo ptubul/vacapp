@@ -18,7 +18,7 @@ node_modules
 dist
 dist-ssr
 *.local
-#.env
+.env
 #client-cert.pem
 #client-key.pem
 client.csr

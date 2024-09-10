@@ -30,7 +30,7 @@ export class BaseController<Entity extends { _id?: string }> {
         console.log(object);
         res.send(object);
       } else {
-        const objects = await this.entity.find();
+        const objects = await this.entity.find({ relations: ["owner"] });
         console.log(objects);
         res.send(objects);
       }

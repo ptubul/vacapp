@@ -18,24 +18,37 @@ const googleSignin = async (req: Request, res: Response) => {
     });
     const payload = ticket.getPayload();
     const email = payload?.email;
-    if (email != null) {
-      let user = await UserRepository.findOneBy({ email: email });
-      if (user == null) {
-        user = await UserRepository.create({
-          email: email,
-          password: "0",
-          imgUrl: payload?.picture,
-        });
-      }
-      const tokens = await generateTokens(user);
-      res.status(200).send({
-        email: user.email,
-        _id: user._id,
-        imgUrl: user.imgUrl,
-        ...tokens,
-      });
+
+    if (!email) {
+      return res.status(400).send("Email not provided by Google.");
     }
+
+    let user = await UserRepository.findOneBy({ email });
+
+    if (!user) {
+      // ודא שכל השדות הנדרשים קיימים
+      const userName = payload?.name || "DefaultUserName"; // שם משתמש ברירת מחדל אם חסר
+      user = UserRepository.create({
+        email,
+        password: "0", // סיסמא ריקה או ערך דיפולטיבי כלשהו
+        imgUrl: payload?.picture,
+        userName, // חשוב להוסיף את השדה הזה
+      });
+
+      await UserRepository.save(user); // שמירה של המשתמש בבסיס הנתונים
+    }
+
+    const tokens = await generateTokens(user);
+
+    res.status(200).send({
+      userName: user.userName,
+      email: user.email,
+      _id: user._id,
+      imgUrl: user.imgUrl,
+      ...tokens,
+    });
   } catch (err) {
+    console.error("Error in Google Sign-In:", err.message);
     return res.status(400).send(err.message);
   }
 };

@@ -391,4 +391,23 @@ describe("--Trips Tests--", () => {
   });
 });
 
-//"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJmYjdiN2IwMi1jMmM2LTRkYTMtODRiZS02MjgzZjA3MzhlNWQiLCJpYXQiOjE3MjI4OTI5NjQsImV4cCI6MTcyMjg5Mjk5NH0.TrDwXPSFybql_dP4kcZzFMjb_Uh1xTrmNC7qwtZwRb0"
+test("Test 10 Add like to a trip", async () => {
+  try {
+    console.log("Add like to a trip");
+    const response = await request(app)
+      .get("/trips")
+      .set("Authorization", "JWT " + accessToken);
+    const data = response.body;
+    const trip = data[0];
+
+    const res = await request(app)
+      .post(`/trips/${trip._id}/likes/`)
+      .set("Authorization", "JWT " + accessToken)
+      .send({ owner: "David" });
+
+    expect(res.statusCode).toBe(200);
+  } catch (error) {
+    console.error("Test failed with error: ", error);
+    throw error;  // Ensure test fails on error
+  }
+});

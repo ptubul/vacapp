@@ -74,4 +74,20 @@ describe("--User Tests--", () => {
       .send(updatedUserData);
     expect(res.status).toBe(404);
   });
+
+  test("Test 7 delete user by id", async () => {
+    console.log("delete user by id");
+    const response = await request(app)
+      .get("/users/" +user._id)
+      .set("Authorization", "JWT " + accessToken);
+    const data = response.body;
+    // console.log(`=============${user._id}===============`);
+    const res = await request(app)
+      .delete("/users/"+ data._id)
+      .set("Authorization", "JWT " + accessToken)
+      .send();
+
+    expect(res.statusCode).toBe(200);
+  });
+
 });

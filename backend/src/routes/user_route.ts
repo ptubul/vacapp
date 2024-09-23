@@ -56,4 +56,7 @@ router.put("/:id", authMiddleware, UserController.put.bind(UserController));
  */
 router.get("/:id", authMiddleware, UserController.get.bind(UserController));
 
+
+router.delete("/:id", authMiddleware, UserController.delete.bind(UserController));
+
 export default router;

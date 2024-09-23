@@ -19,6 +19,7 @@ dist
 dist-ssr
 *.local
 .env
+.envprod
 #client-cert.pem
 #client-key.pem
 client.csr

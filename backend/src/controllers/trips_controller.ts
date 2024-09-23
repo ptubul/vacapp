@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { EntityTarget } from "typeorm";
+import { ParsedQs } from "qs"; // ParsedQs type from Express
 import { BaseController } from "./base_controller";
 import { AuthRequest } from "../common/auth_middleware";
 import { ITrips, Trip } from "../entity/trips_model";
@@ -39,6 +40,72 @@ class TripController extends BaseController<ITrips> {
       res.status(500).json({ message: err.message });
     }
   }
+  
+  async getByParamId(req: Request, res: Response) {
+    const allowedFields = [
+      "_id",
+      "owner",
+      "userName",
+      "imgUrl",
+      "typeTraveler",
+      "country",
+      "typeTrip",
+      "numOfDays",
+      "numOfComments",
+      "numOfLikes",
+    ]; 
+    
+  
+    console.log("get by params:", req.query);
+  
+    try {
+      // Extract query parameters and ensure types are string, number, or boolean
+      const queryParams: ParsedQs = req.query;
+  
+      // Initialize an empty where condition
+      const whereCondition: Record<string, string | number | boolean> = {};
+  
+      // Loop through the query parameters and add them to the where condition if valid
+      Object.entries(queryParams).forEach(([key, value]) => {
+        // Check if the key is allowed and the value is of a permissible type
+        if (allowedFields.includes(key)) {
+          // Parse and assign values only if they match expected types
+          if (typeof value === "string") {
+            whereCondition[key] = value;
+          } else if (Array.isArray(value) && typeof value[0] === "string") {
+            // Handle arrays of strings (if applicable, adjust if needed)
+            whereCondition[key] = value[0];
+          } else if (typeof value === "number" || typeof value === "boolean") {
+            whereCondition[key] = value;
+          }
+        }
+      });
+  
+      // Validate that at least one parameter is being used
+      if (Object.keys(whereCondition).length === 0) {
+        return res.status(400).json({ message: "No valid query parameters provided" });
+      }
+  
+      // Fetch trips based on the constructed where condition
+      const trips = await this.entity.find({
+        where: whereCondition,
+        relations: ["owner", "comments", "likes"], // Add relevant relations if needed
+      });
+  
+      // Check if any records are found and respond accordingly
+      if (trips.length > 0) {
+        return res.status(200).json({ data: trips });
+      } else {
+        return res.status(404).json({ message: "No trips found with the specified criteria" });
+      }
+    } catch (err) {
+      console.error("Error fetching trips:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+  
+
+  
 
   async getWithComments(req: Request, res: Response) {
     console.log(`get by id: ${req.params.id}`);

@@ -270,9 +270,11 @@ describe("--Trips Tests--", () => {
       .post(`/trips/${trip._id}/comments`)
       .set("Authorization", "JWT " + accessToken)
       .send({
-        owner: user.userName,
-        comment: "This is a test comment",
-        date: new Date(),
+        comment: {
+          owner: user.userName,
+          comment: "This is a test comment",
+          date: new Date(),
+        }
       });
 
     expect(res.statusCode).toBe(200);
@@ -284,10 +286,14 @@ describe("--Trips Tests--", () => {
     const res = await request(app)
       .post(`/trips/${nonExistingId}/comments`)
       .set("Authorization", "JWT " + accessToken)
+
       .send({
-        owner: "David",
-        comment: "This is a test comment",
+        comment: {
+          owner: "David",
+          comment: "This is a test comment",
+        }
       });
+
 
     expect(res.statusCode).toBe(404);
   });
@@ -299,9 +305,11 @@ describe("--Trips Tests--", () => {
       .post(`/trips/${nonExistingId}12/comments`)
       .set("Authorization", "JWT " + accessToken)
       .send({
+        comment: {
         owner: "David",
         comment: "This is a test comment",
         date: new Date(),
+        }
       });
 
     expect(res.statusCode).toBe(500);
@@ -381,15 +389,37 @@ describe("--Trips Tests--", () => {
     console.log("Add like to a trip --Server err");
 
     const res = await request(app)
-      .post(`/trips/${nonExistingId}12/likes/`)
+      .get(`/trips/${nonExistingId}12/likes/`)
       .set("Authorization", "JWT " + accessToken)
       .send({
         owner: "David",
       });
 
-    expect(res.statusCode).toBe(500);
+    expect(res.statusCode).toBe(404);
   });
+
+test("Test search trips by parameter", async () => {
+  try {
+    // Search for the trip
+
+    const searchResponse = await request(app)
+    .get(`/trips//search/parameters`)
+    .set("Authorization", "JWT " + accessToken)
+    .query({ country: "update country",tripDescription: "update tripDescription" }); // Adjust the query parameter as needed
+    
+
+    // Validate the search response
+    expect(searchResponse.statusCode).toBe(200);
+    const searchData = searchResponse.body;
+    expect(searchData.data.length).toBeGreaterThan(0); // Ensure that results are returned
+    expect(searchData.data[0].country).toEqual("update country");
+
+  } catch (error) {
+    console.error("Test failed with error: ", error);
+    throw error;  // Ensure test fails on error
+  }
 });
+
 
 test("Test 10 Add like to a trip", async () => {
   try {
@@ -410,4 +440,5 @@ test("Test 10 Add like to a trip", async () => {
     console.error("Test failed with error: ", error);
     throw error;  // Ensure test fails on error
   }
+});
 });

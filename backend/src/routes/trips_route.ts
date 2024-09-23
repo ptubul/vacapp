@@ -39,5 +39,9 @@ router.post(
   authMiddleware,
   TripController.addLike.bind(TripController)
 );
-
+router.get(
+  "/search/parameters",
+  authMiddleware,
+  TripController.getByParamId.bind(TripController)
+);
 export default router;

@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import authMiddleware from "../common/auth_middleware";
-import UserController from "../controllers/user_controller"
+import UserController from "../controllers/user_controller";
 /**
  * @swagger
  * /auth/update/{id}:
@@ -38,7 +38,7 @@ router.put("/:id", authMiddleware, UserController.put.bind(UserController));
  *   get:
  *     summary: retrieves a user via id
  *     tags: [Auth]
-  *     description: get user id and retrieves its info
+ *     description: get user id and retrieves its info
  *     parameters:
  *       - in: path
  *         name: id
@@ -56,7 +56,10 @@ router.put("/:id", authMiddleware, UserController.put.bind(UserController));
  */
 router.get("/:id", authMiddleware, UserController.get.bind(UserController));
 
-
-router.delete("/:id", authMiddleware, UserController.delete.bind(UserController));
+router.delete(
+  "/:id",
+  authMiddleware,
+  UserController.delete.bind(UserController)
+);
 
 export default router;
